@@ -2,7 +2,7 @@
 // Dependencies
 var express = require("express");
 var expressHandlebars = require("express-handlebars");
-var mongoose = require("mongoose");
+var mongojs = require("mongojs");
 // Require axios and cheerio. This makes the scraping possible
 var cheerio = require("cheerio");
 var axios = require("axios");
@@ -26,7 +26,7 @@ db.on("error", function(error) {
 });
 
 // Main route (simple Hello World Message)
-app.get("/scraper.html", function(req, res) {
+app.get("/", function(req, res) {
   res.send("Hello world");
 });
 
@@ -48,7 +48,7 @@ app.get("/all", function(req, res) {
 // Scrape data from one site and place it into the mongodb db
 app.get("/scrape", function(req, res) {
   // Make a request via axios for the news section of `ycombinator`
-  axios.get("https://news.ycombinator.com/").then(function(response) {
+  axios.get("https://old.reddit.com/r/FortNiteBR/").then(function(response) {
     // Load the html body from axios into cheerio
     var $ = cheerio.load(response.data);
     // For each element with a "title" class
@@ -56,7 +56,7 @@ app.get("/scrape", function(req, res) {
       // Save the text and href of each link enclosed in the current element
       var title = $(element).children("a").text();
       var link = $(element).children("a").attr("href");
-
+console.log(title, link);
       // If this found element had both a title and a link
       if (title && link) {
         // Insert the data in the scrapedData db
